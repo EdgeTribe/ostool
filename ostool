@@ -1,0 +1,55 @@
+#!/usr/bin/env python3
+import argparse
+
+from commands import echo, extracttocsv
+
+def main():
+    parser = argparse.ArgumentParser(description="OpenSearch quality-of-life tools")
+    subparsers = parser.add_subparsers(dest='command', help='Available commands')
+
+    echo_parser = subparsers.add_parser('echo', help='Echo something on screen')
+    echo_parser.add_argument('--text', required=True, help='Text you want to echo on stdout')
+
+    extracttocsv_parser = subparsers.add_parser(
+        'extracttocsv', help='Extract raw data from an opensearch index into a csv file'
+        )
+    extracttocsv_parser.add_argument(
+        '--host', required=True, help='Hostname or IP of the OpenSearch cluster'
+        )
+    extracttocsv_parser.add_argument(
+        '--port', required=True, help='Port of the OpenSearch cluster'
+        )
+    extracttocsv_parser.add_argument(
+        '--username', required=True, help='Username of the OpenSearch cluster'
+        )
+    extracttocsv_parser.add_argument(
+        '--password', required=True, help='Password of the OpenSearch cluster'
+        )
+    extracttocsv_parser.add_argument(
+        '--indexname', required=True, help='Index from which the data will be fetched'
+        )
+    extracttocsv_parser.add_argument(
+        '--outputfile', required=True, help='File name where the csv will be written'
+        )
+    extracttocsv_parser.add_argument(
+        '--starttime', required=True, help='Start time of the period to be fetched'
+        )
+    extracttocsv_parser.add_argument(
+        '--endtime', required=True, help='End time of the period to be fetched'
+        )
+
+
+    args = parser.parse_args()
+
+    if args.command == 'echo':
+        echo.echo(args.text)
+    elif args.command == 'extracttocsv':
+        extracttocsv.extracttocsv(
+            args.host, args.port, args.username, args.password, args.indexname,
+            args.outputfile, args.starttime, args.endtime)
+    else:
+        parser.print_help()
+
+if __name__ == '__main__':
+    main()
+
